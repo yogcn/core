@@ -97,13 +97,27 @@ abstract class BaseActivity : AppCompatActivity(), PermissionListener {
         super.setContentView(view, params)
     }
 
+    /**
+     * 设置子布局
+     * @param layoutResID
+     */
     abstract fun setChildView(layoutResID: Int)
 
+    /**
+     * 设置子布局
+     * @param layoutResID
+     * @param viewGroup
+     */
     fun setChildView(layoutResID: Int, viewGroup: ViewGroup?) {
         childDataBind = DataBindingUtil.inflate(layoutInflater, layoutResID, null, false)
         setChildContentView(childDataBind.root, viewGroup)
     }
 
+    /**
+     * 设置子布局
+     * @param view
+     * @param viewGroup
+     */
     fun setChildContentView(view: View?, viewGroup: ViewGroup?) {
         RelayoutUtil.reLayoutViewHierarchy(view)
         viewGroup?.addView(view, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
@@ -117,6 +131,7 @@ abstract class BaseActivity : AppCompatActivity(), PermissionListener {
         initModel()
         super.onResume()
     }
+
     /**
      * 界面不可见时销毁model
      */

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">core</string>
+    <item name="bind_tag" type="id" />
 </resources>
