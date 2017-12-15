@@ -7,6 +7,7 @@ import com.yogcn.core.base.BaseApplication
  * Created by lyndon on 2017/12/12.
  */
 object Log {
+
     private val logEnable = BaseApplication.instance.isDebug()
 
     fun v(tag: String, msg: String?) {
