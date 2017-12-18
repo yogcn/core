@@ -37,6 +37,28 @@ object FunctionUtil {
     }
 
     /**
+     *退出应用
+     */
+    fun exit() {
+        ActivityStack.getInstance().clear()
+        var pid = android.os.Process.myPid()
+        android.os.Process.killProcess(pid)
+    }
+
+    /**
+     * 重启应用
+     * @param context
+     */
+    fun restartApplication(context: Context) {
+        var intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
+        var pid = android.os.Process.myPid()
+        android.os.Process.killProcess(pid)
+    }
+
+    /**
      * 安装application
      * @param context
      * @param file

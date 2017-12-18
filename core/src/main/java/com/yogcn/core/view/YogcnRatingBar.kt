@@ -1,4 +1,4 @@
-package com.zjc.core.view
+package com.yogcn.core.view
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -20,10 +20,10 @@ import com.yogcn.core.R
 class YogcnRatingBar : LinearLayout {
     private var secondProgress: Drawable? = null
     private var progress: Drawable? = null
-    private var horizontal: Int=20
-    private var numberRating=5
+    private var horizontal: Int = 20
+    private var numberRating = 5
     private var rating = 1
-    private var unTouch=false
+    private var unTouch = false
     private var onRatingBarChangeListener: OnRatingChangeListener? = null
 
     interface OnRatingChangeListener {
