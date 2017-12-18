@@ -2,8 +2,10 @@ package com.yogcn.core.util
 
 import android.app.Activity
 import android.content.Context
+import android.content.CursorLoader
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -11,9 +13,10 @@ import android.support.v4.content.FileProvider
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewParent
 import android.widget.PopupWindow
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Created by lyndon on 2017/12/13.
@@ -108,6 +111,19 @@ object FunctionUtil {
     }
 
     /**
+     * 选择文件
+     * @param activity
+     * @param mime 文件类型MIME
+     * @param requestCode
+     */
+    fun chooseFile(activity: Activity, mime: String, requestCode: Int) {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, mime)
+        activity.startActivityForResult(intent, requestCode)
+    }
+
+
+    /**
      * 获取文件uri
      * @param context
      * @param file 文件
@@ -176,5 +192,57 @@ object FunctionUtil {
             popupWindow.showAtLocation(parent, Gravity.LEFT, left, top)
 
         }
+    }
+
+    /**
+     * 随机生成文件名称
+     * @param directory 文件夹路径
+     * @param suffix 文件名后缀
+     */
+    fun genFileName(directory: String, suffix: String): String {
+        val formatter = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.CHINA)
+        var random = formatter.format(Date()) + (10000 + Random().nextInt(89999)).toString()
+        return directory + random + suffix
+    }
+
+    /**
+     * 获取选择图片路径
+     */
+    fun getImagePathFromIntent(activity: Activity, data: Intent?): String? {
+        var uri = data?.data
+        if (uri != null) {
+            var condition = arrayOf(MediaStore.Images.Media.DATA)
+            var cursor = activity.managedQuery(uri, condition, null, null, null)
+            val index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            cursor.moveToFirst()
+            var imagePath = cursor.getString(index)
+            cursor.close()
+            return imagePath
+        }
+        return null
+    }
+
+    /**
+     * 裁剪图片
+     *
+     * @param outputX
+     * @param outputY
+     * @param requestCode
+     */
+    fun cropImage(activity: Activity, fromImageName: String, outputX: Int, outputY: Int, requestCode: Int, packageProvider: String) {
+        val intent = Intent("com.android.camera.action.CROP")
+        val uriFromFile = getUriFromFile(activity, File(fromImageName), packageProvider)
+        intent.setDataAndType(uriFromFile, "image/*")
+        intent.putExtra("crop", "circle")
+        intent.putExtra("aspectX", 1000)
+        intent.putExtra("aspectY", 1000)
+        intent.putExtra("outputX", outputX)
+        intent.putExtra("outputY", outputY)
+        intent.putExtra("scale", true)
+        intent.putExtra("return-data", true)
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
+        intent.putExtra("noFaceDetection", false)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        activity.startActivityForResult(intent, requestCode)
     }
 }

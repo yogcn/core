@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource>
+    <external-path
+        name="root"
+        path="." />
+    <external-path
+        name="images"
+        path="/" />
+    <external-path
+        name="app_images"
+        path="zjc/images/" />
+    <external-path
+        name="downApk"
+        path="zjc/down/" />
+
+</resource>

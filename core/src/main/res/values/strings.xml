@@ -1,4 +1,31 @@
 <resources>
     <string name="app_name">core</string>
+    <color name="white">#ffffff</color>
+    <color name="red_dc1200">#dc1200</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="grey_656565">#656565</color>
     <item name="bind_tag" type="id" />
+    <string name="camera">拍&#160;&#160;&#160;&#160;照</string>
+    <string name="picture">相&#160;&#160;&#160;&#160;册</string>
+    <string name="cancel">取&#160;&#160;&#160;&#160;消</string>
+
+    <style name="TextView">
+        <item name="android:textSize">48px</item>
+        <item name="android:textColor">@color/grey_656565</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Button" parent="TextView">
+        <item name="android:textSize">50px</item>
+    </style>
+
+    <style name="DialogStyle">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
 </resources>

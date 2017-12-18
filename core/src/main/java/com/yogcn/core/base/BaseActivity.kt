@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.yogcn.core.inter.PermissionListener
 import com.yogcn.core.util.ActivityStack
+import com.yogcn.core.util.PhotoUtil
 import com.yogcn.core.util.RelayoutUtil
 
 /**
@@ -31,6 +32,7 @@ abstract class BaseActivity : AppCompatActivity(), PermissionListener {
         ActivityStack.getInstance().put(this)
         LayoutInflater.from(this)
         getExtra()
+
     }
 
     /**
