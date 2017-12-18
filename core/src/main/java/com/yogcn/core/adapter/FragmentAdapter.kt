@@ -8,12 +8,12 @@ import com.yogcn.core.base.BaseFragment
 /**
  * Created by lyndon on 2017/12/13.
  */
-class FragmentAdapter : FragmentPagerAdapter {
+class FragmentAdapter<T : BaseFragment> : FragmentPagerAdapter {
     private var fm: FragmentManager
-    private var fragmentList: ArrayList<BaseFragment>
+    private var fragmentList: ArrayList<T>
     var detachable = true
 
-    constructor(fm: FragmentManager, fragmentList: ArrayList<BaseFragment>) : super(fm) {
+    constructor(fm: FragmentManager, fragmentList: ArrayList<T>) : super(fm) {
         this.fm = fm
         this.fragmentList = fragmentList
     }
