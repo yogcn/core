@@ -38,7 +38,7 @@ abstract class BaseActivity : AppCompatActivity(), PermissionListener {
     /**
      * 页面间参数获取
      */
-    fun getExtra() {
+    open fun getExtra() {
 
     }
 
@@ -150,14 +150,14 @@ abstract class BaseActivity : AppCompatActivity(), PermissionListener {
     /**
      * 初始化model
      */
-    fun initModel() {
+    open fun initModel() {
 
     }
 
     /**
      * 销毁model
      */
-    fun destroyModel() {
+    open fun destroyModel() {
 
     }
 
