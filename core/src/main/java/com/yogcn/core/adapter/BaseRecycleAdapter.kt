@@ -1,7 +1,9 @@
 package com.yogcn.core.adapter
 
 import android.content.Context
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.SparseArray
 import android.view.ViewGroup
 import com.yogcn.core.base.RecyclerHolder
@@ -131,6 +133,36 @@ abstract class BaseRecycleAdapter<T> : RecyclerView.Adapter<RecyclerHolder> {
                 notifyDataSetChanged()
             else
                 notifyItemRangeChanged(position, itemCount)
+        }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView?) {
+        super.onAttachedToRecyclerView(recyclerView)
+        var layoutManager = recyclerView?.layoutManager
+        if (layoutManager is GridLayoutManager) {
+            var lookup = layoutManager.spanSizeLookup
+            layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    var itemViewType = getItemViewType(position)
+                    return if (headerHolder[itemViewType] != null || footerHolder[itemViewType] != null) {
+                        layoutManager.spanCount
+                    } else {
+                        lookup?.getSpanSize(position) ?: 1
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onViewAttachedToWindow(holder: RecyclerHolder?) {
+        super.onViewAttachedToWindow(holder)
+        val position = holder?.layoutPosition
+        var itemViewType = getItemViewType(position!!)
+        if (headerHolder[itemViewType] != null || footerHolder[itemViewType] != null) {
+            val lp = holder?.itemView?.layoutParams
+            if (lp != null && lp is StaggeredGridLayoutManager.LayoutParams) {
+                lp.isFullSpan = true
+            }
         }
     }
 }

@@ -47,6 +47,10 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
         if (null != attrs) {
             var a = context.obtainStyledAttributes(attrs, R.styleable.MarqueeView)
             interval = a.getInt(R.styleable.MarqueeView_interval, 5000)
+            y
+
+
+
             pageLocation = a.getInt(R.styleable.MarqueeView_pageLocation, 0)
             shopPage = a.getBoolean(R.styleable.MarqueeView_showPage, false)
             pageOrientation = a.getInt(R.styleable.MarqueeView_pageOrientation, 0)
