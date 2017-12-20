@@ -9,7 +9,6 @@ import android.widget.RelativeLayout
 import com.yogcn.core.R
 import com.yogcn.core.adapter.BaseLinearLayoutAdapter
 import com.yogcn.core.adapter.MarqueeAdapter
-import java.util.*
 
 /**
  * Created by lyndon on 2017/12/20.
@@ -24,8 +23,19 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
     var interval = 5000 //5s循环一次
     private var marqueeAdapter: MarqueeAdapter<*>? = null
     private var pageAdapter: BaseLinearLayoutAdapter<*>? = null
-    private var timer: Timer? = null
     private var currentPosition: Int = 0
+    private var timerTask = object : Runnable {
+        override fun run() {
+            var currentItem = viewPager.currentItem
+            currentItem++
+            if (currentItem == marqueeAdapter?.count) {
+                currentItem = 0
+            }
+            viewPager.currentItem = currentItem
+            handler.removeCallbacks(this)
+            handler.postDelayed(this, interval.toLong())
+        }
+    }
 
     constructor(context: Context?) : super(context) {
         init(null)
@@ -47,10 +57,6 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
         if (null != attrs) {
             var a = context.obtainStyledAttributes(attrs, R.styleable.MarqueeView)
             interval = a.getInt(R.styleable.MarqueeView_interval, 5000)
-            y
-
-
-
             pageLocation = a.getInt(R.styleable.MarqueeView_pageLocation, 0)
             shopPage = a.getBoolean(R.styleable.MarqueeView_showPage, false)
             pageOrientation = a.getInt(R.styleable.MarqueeView_pageOrientation, 0)
@@ -113,23 +119,11 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
     }
 
     fun start() {
-        timer = Timer()
-        var timerTask = object : TimerTask() {
-            override fun run() {
-                var currentItem = viewPager.currentItem
-                currentItem++
-                if (currentItem == marqueeAdapter?.count) {
-                    currentItem = 0
-                }
-                viewPager.currentItem = currentItem
-            }
-        }
-        timer?.schedule(timerTask, interval.toLong(), interval.toLong())
+        handler.postDelayed(timerTask, interval.toLong())
     }
 
     fun stop() {
-        timer?.cancel()
-        timer = null
+        handler.removeCallbacks(timerTask)
     }
 
     fun onResume() {
