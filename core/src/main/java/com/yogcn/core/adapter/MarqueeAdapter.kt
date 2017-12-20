@@ -44,7 +44,9 @@ abstract class MarqueeAdapter<T> : PagerAdapter {
     abstract fun bindData(holder: ViewHolder?, t: T, position: Int)
 
     override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any?) {
-        var view = `object` as View
-        container?.removeView(view)
+        if (null != `object`) {
+            var view = `object` as View
+            container?.removeView(view)
+        }
     }
 }
