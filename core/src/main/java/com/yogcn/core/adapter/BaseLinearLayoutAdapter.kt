@@ -11,6 +11,7 @@ abstract class BaseLinearLayoutAdapter<T> : BaseAdapter<T> {
 
     private var detachView: ArrayList<View>
     private var container: LinearLayout
+    protected var selectPosition: Int = 0
 
     constructor(context: Context, container: LinearLayout, data: MutableCollection<T>, layoutRes: Int) : super(context, data, layoutRes) {
         this.container = container
@@ -41,6 +42,11 @@ abstract class BaseLinearLayoutAdapter<T> : BaseAdapter<T> {
         }
 
 
+    }
+
+    fun selectPosition(position: Int) {
+        this.selectPosition = position
+        notifyDataSetChanged()
     }
 
 }

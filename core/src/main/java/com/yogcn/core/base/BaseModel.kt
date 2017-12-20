@@ -81,7 +81,7 @@ abstract class BaseModel : StringCallback() {
      * @param message 提示信息
      * @param result  返回数据
      */
-    protected fun dispatchSuccess(tag: String, message: String, vararg result: Any) {
+    protected fun dispatchSuccess(tag: String, message: String,  vararg result: Any) {
         for (callback in callbackList) {
             callback.requestSuccess(tag, message, result)
         }
