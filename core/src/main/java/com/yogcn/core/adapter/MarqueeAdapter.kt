@@ -18,7 +18,7 @@ abstract class MarqueeAdapter<T> : PagerAdapter {
     constructor(context: Context, data: MutableCollection<T>, layoutRes: Int) {
         this.context = context
         this.data = data
-        notifyDataSetChanged()
+        this.layoutRes = layoutRes
     }
 
     fun setData(data: MutableCollection<T>) {
@@ -26,6 +26,7 @@ abstract class MarqueeAdapter<T> : PagerAdapter {
         list.add(0, list[data.size - 1])
         list.add(list[1])
         this.data.addAll(list)
+        notifyDataSetChanged()
     }
 
     override fun getCount() = data.size
