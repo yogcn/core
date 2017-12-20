@@ -1,9 +1,11 @@
 package com.yogcn.core.view
 
 import android.content.Context
+import android.os.Handler
 import android.support.v4.view.ViewPager
 import android.support.v4.view.ViewPager.OnPageChangeListener
 import android.util.AttributeSet
+import android.view.animation.Animation
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import com.yogcn.core.R
@@ -21,19 +23,17 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
     var pageOrientation = 0//默认横向
     var shopPage = false //默认不显示分页指示器
     var interval = 5000 //5s循环一次
-    private var marqueeAdapter: MarqueeAdapter<*>? = null
+    private lateinit var marqueeAdapter: MarqueeAdapter<*>
     private var pageAdapter: BaseLinearLayoutAdapter<*>? = null
     private var currentPosition: Int = 0
+    private var mHandler: Handler? = null
     private var timerTask = object : Runnable {
         override fun run() {
             var currentItem = viewPager.currentItem
             currentItem++
-            if (currentItem == marqueeAdapter?.count) {
-                currentItem = 0
-            }
             viewPager.currentItem = currentItem
-            handler.removeCallbacks(this)
-            handler.postDelayed(this, interval.toLong())
+            mHandler?.removeCallbacks(this)
+            mHandler?.postDelayed(this, interval.toLong())
         }
     }
 
@@ -68,7 +68,7 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
         if (shopPage) {
             pageLayout = LinearLayout(context)
             pageLayout?.orientation = if (pageOrientation == 0) LinearLayout.HORIZONTAL else LinearLayout.VERTICAL
-            var layoutParams = RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            var layoutParams = RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             when (pageLocation) {
             //top居中
                 1 -> layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL)
@@ -119,11 +119,13 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
     }
 
     fun start() {
-        handler.postDelayed(timerTask, interval.toLong())
+        mHandler = Handler()
+        mHandler?.postDelayed(timerTask, interval.toLong())
     }
 
     fun stop() {
-        handler.removeCallbacks(timerTask)
+        mHandler?.removeCallbacks(timerTask)
+        mHandler = null
     }
 
     fun onResume() {
@@ -142,23 +144,25 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
         viewPager.setPageTransformer(true, transformer)
     }
 
+    /**
+     * 设置切换动画
+     * @param animation
+     */
+    override fun setAnimation(animation: Animation) {
+        viewPager.animation = animation
+    }
+
+
     override fun onPageScrollStateChanged(state: Int) {
-        if (state == ViewPager.SCROLL_STATE_IDLE)
-            return
-        if (currentPosition == 0)
-            viewPager.setCurrentItem(marqueeAdapter?.count!! - 2, false)
-        else if (currentPosition == marqueeAdapter?.count!! - 1) {
-            viewPager.setCurrentItem(1, false)
-        }
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
     }
 
     override fun onPageSelected(position: Int) {
-        this.currentPosition = position
+        this.currentPosition = position % marqueeAdapter.getDataCount()
         if (shopPage)
-            pageAdapter?.selectPosition(position)
+            pageAdapter?.selectPosition(currentPosition)
     }
 
 

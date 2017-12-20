@@ -21,25 +21,19 @@ abstract class MarqueeAdapter<T> : PagerAdapter {
         this.layoutRes = layoutRes
     }
 
-    fun setData(data: MutableCollection<T>) {
-        var list = ArrayList(data)
-        list.add(0, list[data.size - 1])
-        list.add(list[1])
-        this.data.addAll(list)
-        notifyDataSetChanged()
-    }
+    override fun getCount() = Int.MAX_VALUE
 
-    override fun getCount() = data.size
+    fun getDataCount() = data.size
 
     override fun isViewFromObject(view: View?, `object`: Any?) = view == `object`
 
     fun getItem(position: Int): T {
-        return ArrayList(data)[position]
+        return ArrayList(data)[position % getDataCount()]
     }
 
     override fun instantiateItem(container: ViewGroup?, position: Int): Any {
-        var position = position % count
-        var holder = ViewHolder(context, container, layoutRes, false)
+        var position = position % getDataCount()
+        var holder = ViewHolder(context, container, layoutRes, true)
         bindData(holder, getItem(position), position)
         return holder.dataBinding.root
     }
