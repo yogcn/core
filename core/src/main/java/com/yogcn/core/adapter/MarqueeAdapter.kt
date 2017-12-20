@@ -31,11 +31,14 @@ abstract class MarqueeAdapter<T> : PagerAdapter {
         return ArrayList(data)[position % getDataCount()]
     }
 
-    override fun instantiateItem(container: ViewGroup?, position: Int): Any {
-        var position = position % getDataCount()
-        var holder = ViewHolder(context, container, layoutRes, true)
-        bindData(holder, getItem(position), position)
-        return holder.dataBinding.root
+    override fun instantiateItem(container: ViewGroup?, position: Int): Any? {
+        if (getDataCount() != 0) {
+            var position = position % getDataCount()
+            var holder = ViewHolder(context, container, layoutRes, true)
+            bindData(holder, getItem(position), position)
+            return holder.dataBinding.root
+        }
+        return null
     }
 
     abstract fun bindData(holder: ViewHolder?, t: T, position: Int)
