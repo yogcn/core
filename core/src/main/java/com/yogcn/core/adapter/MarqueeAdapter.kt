@@ -12,16 +12,20 @@ import java.util.ArrayList
  */
 abstract class MarqueeAdapter<T> : PagerAdapter {
     protected var context: Context
-    protected var data: MutableCollection<T>
+    private var data: MutableCollection<T>
     private var layoutRes: Int = 0
 
     constructor(context: Context, data: MutableCollection<T>, layoutRes: Int) {
         this.context = context
+        this.data = data
+        notifyDataSetChanged()
+    }
+
+    fun setData(data: MutableCollection<T>) {
         var list = ArrayList(data)
         list.add(0, list[data.size - 1])
         list.add(list[1])
-        this.data = list
-        this.layoutRes = layoutRes
+        this.data.addAll(list)
     }
 
     override fun getCount() = data.size
