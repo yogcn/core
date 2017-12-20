@@ -68,7 +68,7 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
         if (shopPage) {
             pageLayout = LinearLayout(context)
             pageLayout?.orientation = if (pageOrientation == 0) LinearLayout.HORIZONTAL else LinearLayout.VERTICAL
-            var layoutParams = RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            var layoutParams = RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             when (pageLocation) {
             //top居中
                 1 -> layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL)
