@@ -17,7 +17,7 @@ import java.util.*
 class MarqueeView : RelativeLayout, OnPageChangeListener {
 
     private lateinit var viewPager: ViewPager
-    private lateinit var pageLayout: LinearLayout
+    var pageLayout: LinearLayout? = null
     var pageLocation = 0//默认左上角
     var pageOrientation = 0//默认横向
     var shopPage = false //默认不显示分页指示器
@@ -54,7 +54,7 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
         addView(viewPager, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
         if (shopPage) {
             pageLayout = LinearLayout(context)
-            pageLayout.orientation = if (pageOrientation == 0) LinearLayout.HORIZONTAL else LinearLayout.VERTICAL
+            pageLayout?.orientation = if (pageOrientation == 0) LinearLayout.HORIZONTAL else LinearLayout.VERTICAL
             var layoutParams = RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
             when (pageLocation) {
             //top居中
