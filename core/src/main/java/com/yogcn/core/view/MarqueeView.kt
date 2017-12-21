@@ -110,7 +110,6 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
     fun setMarqueeAdapter(adapter: MarqueeAdapter<*>) {
         this.marqueeAdapter = adapter
         viewPager.adapter = marqueeAdapter
-        onPageSelected(0)
     }
 
     /**
