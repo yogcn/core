@@ -64,8 +64,7 @@ class PullToRefreshView : SwipeRefreshLayout {
                 var adapter = recyclerView?.adapter as BaseRecycleAdapter<*>
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition + 1 == adapter?.itemCount) {
                     if (null != loadMoreHolder) {
-                        if (adapter.footerHolder.indexOfValue(loadMoreHolder) == -1)
-                            adapter.addFooter(loadMoreHolder)
+                        adapter.addFooter(loadMoreHolder)
                         adapter.notifyItemInserted(adapter.itemCount)
                     }
                     refreshListener?.upLoadMore()
@@ -88,6 +87,7 @@ class PullToRefreshView : SwipeRefreshLayout {
         var adapter = recyclerView?.adapter as BaseRecycleAdapter<*>
         if (null != loadMoreHolder) {
             adapter.notifyItemRemoved(adapter.itemCount - 1)
+            adapter.footerHolder.clear()
         }
     }
 }
