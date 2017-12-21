@@ -29,13 +29,14 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
     private var mHandler: Handler? = null
     private var timerTask = object : Runnable {
         override fun run() {
+            mHandler?.removeCallbacks(this)
             var currentItem = viewPager.currentItem
             currentItem++
             viewPager.currentItem = currentItem
-            mHandler?.removeCallbacks(this)
             mHandler?.postDelayed(this, interval.toLong())
         }
     }
+
 
     constructor(context: Context?) : super(context) {
         init(null)
@@ -62,6 +63,7 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
             pageOrientation = a.getInt(R.styleable.MarqueeView_pageOrientation, 0)
             a.recycle()
         }
+        mHandler = Handler()
         viewPager = ViewPager(context)
         viewPager.addOnPageChangeListener(this)
         addView(viewPager, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
@@ -119,13 +121,11 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
     }
 
     fun start() {
-        mHandler = Handler()
         mHandler?.postDelayed(timerTask, interval.toLong())
     }
 
     fun stop() {
         mHandler?.removeCallbacks(timerTask)
-        mHandler = null
     }
 
     fun onResume() {
@@ -136,6 +136,11 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
         stop()
     }
 
+    fun onDestroy() {
+        mHandler?.removeCallbacks(timerTask)
+        this.mHandler = null
+    }
+
     /**
      * 设置切换动画
      * @param transformer
@@ -143,15 +148,6 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
     fun setAnimation(transformer: ViewPager.PageTransformer) {
         viewPager.setPageTransformer(true, transformer)
     }
-
-    /**
-     * 设置切换动画
-     * @param animation
-     */
-    override fun setAnimation(animation: Animation) {
-        viewPager.animation = animation
-    }
-
 
     override fun onPageScrollStateChanged(state: Int) {
     }
