@@ -23,8 +23,6 @@ class PullToRefreshView : SwipeRefreshLayout {
 
     var loadMoreHolder: ViewHolder? = null
 
-    var hasNex = false
-
     interface PullToRefresh {
         fun downRefresh()
         fun upLoadMore()
@@ -68,11 +66,9 @@ class PullToRefreshView : SwipeRefreshLayout {
                     if (null != loadMoreHolder) {
                         if (adapter.footerHolder.size() == 0)
                             adapter.addFooter(loadMoreHolder)
-                    }
-                    if (hasNex) {
                         adapter.notifyItemInserted(adapter.itemCount)
-                        refreshListener?.upLoadMore()
                     }
+                    refreshListener?.upLoadMore()
                 }
             }
         })
