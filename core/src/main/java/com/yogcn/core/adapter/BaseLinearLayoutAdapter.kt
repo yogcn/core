@@ -16,7 +16,8 @@ abstract class BaseLinearLayoutAdapter<T> : BaseAdapter<T> {
     constructor(context: Context, container: LinearLayout, data: MutableCollection<T>, layoutRes: Int) : super(context, data, layoutRes) {
         this.container = container
         this.detachView = ArrayList()
-        notifyDataSetChanged()
+        if (data.isNotEmpty())
+            notifyDataSetChanged()
     }
 
     override fun notifyDataSetChanged() {
