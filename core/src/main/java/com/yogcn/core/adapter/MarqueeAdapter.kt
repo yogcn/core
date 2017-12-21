@@ -25,28 +25,30 @@ abstract class MarqueeAdapter<T> : PagerAdapter {
 
     fun getDataCount() = data.size
 
-    override fun isViewFromObject(view: View?, `object`: Any?) = view == `object`
+    override fun isViewFromObject(view: View?, `object`: Any?): Boolean {
+        return view == `object`
+    }
 
-    fun getItem(position: Int): T {
-        return ArrayList(data)[position % getDataCount()]
+    fun getItem(position: Int): T? {
+        return if (data.isEmpty())
+            null
+        else
+            ArrayList(data)[position % getDataCount()]
     }
 
     override fun instantiateItem(container: ViewGroup?, position: Int): Any? {
-        if (getDataCount() != 0) {
+        var holder = ViewHolder(context, container, layoutRes, true)
+        if (data.isNotEmpty()) {
             var position = position % getDataCount()
-            var holder = ViewHolder(context, container, layoutRes, true)
             bindData(holder, getItem(position), position)
-            return holder.dataBinding.root
         }
-        return null
+        return holder.dataBinding.root
     }
 
-    abstract fun bindData(holder: ViewHolder?, t: T, position: Int)
+    abstract fun bindData(holder: ViewHolder?, t: T?, position: Int)
 
     override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any?) {
-        if (null != `object`) {
-            var view = `object` as View
-            container?.removeView(view)
-        }
+        var view = `object` as View
+        container?.removeView(view)
     }
 }
