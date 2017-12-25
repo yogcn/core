@@ -10,9 +10,9 @@ import com.yogcn.core.util.Log
  * Created by lyndon on 2017/12/12.
  */
 open class BaseApplication : Application() {
-    protected var context: Context? = null
-    protected var versionCode: Int = 1
-    protected var versionName: String = "1.0"
+    var context: Context? = null
+    var versionCode: Int = 1
+    var versionName: String = "1.0"
 
     companion object {
         lateinit var instance: BaseApplication
