@@ -68,7 +68,7 @@ abstract class BaseFragment : Fragment() {
     }
 
     override fun onPause() {
-        onVisible()
+        onInVisible()
         super.onPause()
 
     }
