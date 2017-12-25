@@ -10,9 +10,9 @@ import com.yogcn.core.util.Log
  * Created by lyndon on 2017/12/12.
  */
 open class BaseApplication : Application() {
-    var context: Context? = null
-    var versionCode: Int = 1
-    var versionName: String = "1.0"
+    protected var context: Context? = null
+    protected var versionCode: Int = 1
+    protected var versionName: String = "1.0"
 
     companion object {
         lateinit var instance: BaseApplication
@@ -40,9 +40,9 @@ open class BaseApplication : Application() {
     /**
      * 是否处于Debug模式
      */
-    fun isDebug() = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+    open fun isDebug() = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
 
-    fun <T> getApplicationMeta(key: String): T? {
+    open fun <T> getApplicationMeta(key: String): T? {
         return try {
             applicationInfo.metaData.get(key) as T
         } catch (e: PackageManager.NameNotFoundException) {

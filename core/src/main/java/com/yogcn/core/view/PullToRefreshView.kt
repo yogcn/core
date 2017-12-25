@@ -23,6 +23,8 @@ class PullToRefreshView : SwipeRefreshLayout {
 
     var loadMoreHolder: ViewHolder? = null
 
+    var onScrollListener: RecyclerView.OnScrollListener? = null
+
     interface PullToRefresh {
         fun downRefresh()
         fun upLoadMore()
@@ -57,6 +59,7 @@ class PullToRefreshView : SwipeRefreshLayout {
                         }
                     }
                 }
+                onScrollListener?.onScrolled(recyclerView, dx, dy)
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
@@ -70,6 +73,7 @@ class PullToRefreshView : SwipeRefreshLayout {
                     }
                     refreshListener?.upLoadMore()
                 }
+                onScrollListener?.onScrollStateChanged(recyclerView, newState)
             }
         })
     }
