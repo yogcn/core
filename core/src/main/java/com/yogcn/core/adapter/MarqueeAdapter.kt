@@ -23,17 +23,24 @@ abstract class MarqueeAdapter<T> : PagerAdapter {
 
     override fun getCount() = Int.MAX_VALUE
 
-    fun getDataCount() = data.size
+    open fun getDataCount() = data.size
 
     override fun isViewFromObject(view: View?, `object`: Any?): Boolean {
         return view == `object`
     }
 
-    fun getItem(position: Int): T? {
+    open fun getItem(position: Int): T? {
         return if (data.isEmpty())
             null
         else
             ArrayList(data)[position % getDataCount()]
+    }
+
+    override fun getItemPosition(`object`: Any?): Int {
+        return if (data.isEmpty())
+            POSITION_NONE
+        else
+            POSITION_UNCHANGED
     }
 
     override fun instantiateItem(container: ViewGroup?, position: Int): Any? {
