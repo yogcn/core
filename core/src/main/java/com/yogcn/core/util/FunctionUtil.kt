@@ -212,7 +212,7 @@ object FunctionUtil {
         var uri = data?.data
         if (uri != null) {
             var condition = arrayOf(MediaStore.Images.Media.DATA)
-            var cursor = activity.managedQuery(uri, condition, null, null, null)
+            var cursor = activity.contentResolver.query(uri, condition, null, null, null)
             val index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
             cursor.moveToFirst()
             var imagePath = cursor.getString(index)

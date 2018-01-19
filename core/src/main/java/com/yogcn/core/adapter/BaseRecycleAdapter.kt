@@ -69,7 +69,7 @@ abstract class BaseRecycleAdapter<T> : RecyclerView.Adapter<RecyclerHolder> {
             }
         //item
             else -> {
-                bindData(holder?.holder, getItem(position), position)
+                bindData(holder?.holder, getItem(position - headerHolder.size()), position)
                 holder?.holder?.dataBinding?.executePendingBindings()
             }
         }
