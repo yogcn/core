@@ -156,9 +156,11 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
     }
 
     override fun onPageSelected(position: Int) {
-        this.currentPosition = position % marqueeAdapter.getDataCount()
-        if (shopPage)
-            pageAdapter?.selectPosition(currentPosition)
+        if (0 != marqueeAdapter.getDataCount()) {
+            this.currentPosition = position % marqueeAdapter.getDataCount()
+            if (shopPage)
+                pageAdapter?.selectPosition(currentPosition)
+        }
     }
 
 

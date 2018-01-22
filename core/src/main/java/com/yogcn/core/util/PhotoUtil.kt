@@ -17,13 +17,13 @@ import com.yogcn.core.databinding.PopupPhotoBinding
  */
 class PhotoUtil : View.OnClickListener {
 
-    private lateinit var activity: Activity
-    private lateinit var photoBind: PopupPhotoBinding
+    private var activity: Activity? = null
+    private var photoBind: PopupPhotoBinding? = null
     private var popupWindow: PopupWindow? = null
-    private lateinit var imageName: String
-    private lateinit var directory: String
-    private lateinit var suffix: String
-    private lateinit var fileProvider: String
+    private var imageName: String? = null
+    private var directory: String? = null
+    private var suffix: String? = null
+    private var fileProvider: String? = null
     private var isCrop = false
     private var outputX = 0
     private var outputY = 0
@@ -32,6 +32,7 @@ class PhotoUtil : View.OnClickListener {
     interface Callback {
         fun onPhotoSuccess(path: String?)
     }
+
 
     companion object {
         const val REQUEST_CAMERA = 0x901
@@ -90,17 +91,17 @@ class PhotoUtil : View.OnClickListener {
      */
     private fun init(context: Activity) {
         if (null == popupWindow) {
+            this.activity = context
             val holder = ViewHolder(context, null, R.layout.popup_photo, false)
             photoBind = holder.dataBinding as PopupPhotoBinding
-            photoBind.btnCamera.setOnClickListener(this)
-            photoBind.btnPicture.setOnClickListener(this)
-            photoBind.btnCancel.setOnClickListener(this)
-            popupWindow = PopupWindow(photoBind.root, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            photoBind?.btnCamera?.setOnClickListener(this)
+            photoBind?.btnPicture?.setOnClickListener(this)
+            photoBind?.btnCancel?.setOnClickListener(this)
+            popupWindow = PopupWindow(photoBind?.root, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             popupWindow?.isFocusable = true
             popupWindow?.isTouchable = true
             popupWindow?.isOutsideTouchable = false
             popupWindow?.setBackgroundDrawable(BitmapDrawable())
-            this.activity = context
         }
     }
 
@@ -118,11 +119,11 @@ class PhotoUtil : View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btn_camera -> {
-                imageName = FunctionUtil.genFileName(directory, suffix)
-                FunctionUtil.takePhoto(activity, imageName, REQUEST_CAMERA, fileProvider)
+                imageName = FunctionUtil.genFileName(directory!!, suffix!!)
+                FunctionUtil.takePhoto(activity!!, imageName!!, REQUEST_CAMERA, fileProvider!!)
             }
             R.id.btn_picture -> {
-                FunctionUtil.chooseFile(activity, "image/*", REQUEST_CHOOSE)
+                FunctionUtil.chooseFile(activity!!, "image/*", REQUEST_CHOOSE)
             }
         }
         popupWindow?.dismiss()
@@ -135,24 +136,35 @@ class PhotoUtil : View.OnClickListener {
                     if (!isCrop)
                         callback?.onPhotoSuccess(imageName)
                     else
-                        FunctionUtil.cropImage(activity, imageName, outputX, outputY, REQUEST_CROP, fileProvider)
+                        FunctionUtil.cropImage(activity!!, imageName!!, outputX, outputY, REQUEST_CROP, fileProvider!!)
                 }
                 REQUEST_CHOOSE -> {
-                    val imagePath = FunctionUtil.getImagePathFromIntent(activity, data)
+                    val imagePath = FunctionUtil.getImagePathFromIntent(activity!!, data)
                     if (!isCrop)
                         callback?.onPhotoSuccess(imagePath)
                     else {
-                        imageName = FunctionUtil.genFileName(directory, suffix)
-                        FunctionUtil.cropImage(activity, imageName, outputX, outputY, REQUEST_CROP, fileProvider)
+                        imageName = FunctionUtil.genFileName(directory!!, suffix!!)
+                        FunctionUtil.cropImage(activity!!, imageName!!, outputX, outputY, REQUEST_CROP, fileProvider!!)
                     }
                 }
                 REQUEST_CROP -> {
                     var bitmap = data?.extras?.getParcelable<Bitmap>("data")
-                    BitmapUtil.saveBitmap(bitmap, imageName)
+                    BitmapUtil.saveBitmap(bitmap, imageName!!)
                     callback?.onPhotoSuccess(imageName)
                 }
             }
         }
+    }
+
+    fun onDestroy() {
+        callback = null
+        photoBind = null
+        popupWindow = null
+        activity = null
+        imageName = null
+        isCrop = false
+        outputX = 0
+        outputY = 0
     }
 
 
