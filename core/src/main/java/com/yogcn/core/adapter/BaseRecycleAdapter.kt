@@ -127,13 +127,14 @@ abstract class BaseRecycleAdapter<T> : RecyclerView.Adapter<RecyclerHolder> {
      */
     fun addData(data: MutableCollection<T>?) {
         if (null != data) {
-            var position = itemCount
             this.data.addAll(data)
-            if (position == 0)
-                notifyDataSetChanged()
-            else
-                notifyItemRangeChanged(position, itemCount)
+            notifyDataSetChanged()
         }
+    }
+
+    fun clear() {
+        this.data.clear()
+        notifyDataSetChanged()
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView?) {
