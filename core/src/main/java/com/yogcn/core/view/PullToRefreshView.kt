@@ -102,6 +102,7 @@ class PullToRefreshView : SwipeRefreshLayout {
         if (null != loadMoreHolder) {
             adapter.notifyItemRemoved(adapter.itemCount - 1)
         }
-        loading = false
+        recyclerView.postDelayed({ loading = false }, 500)
+
     }
 }
