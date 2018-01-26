@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.AttributeSet
+import android.util.Log
 import android.view.ViewGroup
 import com.yogcn.core.adapter.BaseRecycleAdapter
 import com.yogcn.core.base.ViewHolder
@@ -23,6 +24,8 @@ class PullToRefreshView : SwipeRefreshLayout {
 
     var loadMoreHolder: ViewHolder? = null
 
+    var loading = false
+
     var onScrollListener: RecyclerView.OnScrollListener? = null
 
     interface PullToRefresh {
@@ -39,7 +42,9 @@ class PullToRefreshView : SwipeRefreshLayout {
     }
 
     private fun init() {
-        this.setOnRefreshListener { refreshListener?.downRefresh() }
+        this.setOnRefreshListener {
+            refreshListener?.downRefresh()
+        }
         recyclerView = RecyclerView(context)
         this.addView(recyclerView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -64,19 +69,23 @@ class PullToRefreshView : SwipeRefreshLayout {
 
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                var adapter = recyclerView?.adapter as BaseRecycleAdapter<*>
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition + 1 == adapter?.itemCount) {
-                    if (null != loadMoreHolder) {
-                        if (adapter.footerHolder.size() == 0)
-                            adapter.addFooter(loadMoreHolder)
-                        adapter.notifyItemInserted(adapter.itemCount)
+                if (!loading) {
+                    var adapter = recyclerView?.adapter as BaseRecycleAdapter<*>
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition + 1 == adapter?.itemCount) {
+                        if (null != loadMoreHolder) {
+                            if (adapter.footerHolder.size() == 0)
+                                adapter.addFooter(loadMoreHolder)
+                            adapter.notifyItemInserted(adapter.itemCount)
+                        }
+                        refreshListener?.upLoadMore()
+                        loading = true
                     }
-                    refreshListener?.upLoadMore()
+                    onScrollListener?.onScrollStateChanged(recyclerView, newState)
                 }
-                onScrollListener?.onScrollStateChanged(recyclerView, newState)
             }
         })
     }
+
 
     /**
      * 刷新完成
@@ -93,5 +102,6 @@ class PullToRefreshView : SwipeRefreshLayout {
         if (null != loadMoreHolder) {
             adapter.notifyItemRemoved(adapter.itemCount - 1)
         }
+        loading = false
     }
 }

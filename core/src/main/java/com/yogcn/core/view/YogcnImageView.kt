@@ -28,6 +28,14 @@ open class YogcnImageView : AppCompatImageView {
 
         }
 
+        @BindingAdapter(*arrayOf("res", "error", "place"))
+        @JvmStatic
+        fun loadImage(imageView: YogcnImageView, res: Int, error: Drawable, place: Drawable) {
+            var context = imageView.context
+            Picasso.with(context).load(res).placeholder(place).error(error).fit().into(imageView)
+
+        }
+
         @BindingAdapter(*arrayOf("url"))
         @JvmStatic
         fun loadImage(imageView: YogcnImageView, url: String?) {
