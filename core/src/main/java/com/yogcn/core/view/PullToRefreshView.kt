@@ -1,6 +1,7 @@
 package com.yogcn.core.view
 
 import android.content.Context
+import android.os.Handler
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -97,13 +98,17 @@ class PullToRefreshView : SwipeRefreshLayout {
     /**
      * 加载更多完成
      */
-    fun onLoadFinish() {
-        var adapter = recyclerView?.adapter as BaseRecycleAdapter<*>
-        if (null != loadMoreHolder &&  adapter?.footerHolder.size() > 0) {
-            adapter.footerHolder.clear()
-            adapter.notifyDataSetChanged()
-        }
-        loading = false
-        refreshListener?.showMessage()
+    fun onLoadFinish(hasMore: Boolean) {
+        Handler().postDelayed({
+            var adapter = recyclerView?.adapter as BaseRecycleAdapter<*>
+            if (null != loadMoreHolder && adapter?.footerHolder.size() > 0) {
+                adapter.footerHolder.clear()
+                adapter.notifyDataSetChanged()
+            }
+            loading = false
+            if (!hasMore)
+                refreshListener?.showMessage()
+        }, 500)
     }
+
 }
