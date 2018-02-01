@@ -30,6 +30,7 @@ class PullToRefreshView : SwipeRefreshLayout {
     interface PullToRefresh {
         fun downRefresh()
         fun upLoadMore()
+        fun showMessage()
     }
 
     constructor(context: Context?) : super(context) {
@@ -98,10 +99,11 @@ class PullToRefreshView : SwipeRefreshLayout {
      */
     fun onLoadFinish() {
         var adapter = recyclerView?.adapter as BaseRecycleAdapter<*>
-        if (null != loadMoreHolder) {
-            adapter.notifyItemRemoved(adapter.itemCount - 1)
+        if (null != loadMoreHolder &&  adapter?.footerHolder.size() > 0) {
+            adapter.footerHolder.clear()
+            adapter.notifyDataSetChanged()
         }
-        recyclerView.postDelayed({ loading = false }, 500)
-
+        loading = false
+        refreshListener?.showMessage()
     }
 }
