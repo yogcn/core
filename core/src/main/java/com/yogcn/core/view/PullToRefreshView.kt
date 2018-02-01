@@ -31,7 +31,6 @@ class PullToRefreshView : SwipeRefreshLayout {
     interface PullToRefresh {
         fun downRefresh()
         fun upLoadMore()
-        fun showMessage()
     }
 
     constructor(context: Context?) : super(context) {
@@ -98,7 +97,7 @@ class PullToRefreshView : SwipeRefreshLayout {
     /**
      * 加载更多完成
      */
-    fun onLoadFinish(hasMore: Boolean) {
+    fun onLoadFinish() {
         Handler().postDelayed({
             var adapter = recyclerView?.adapter as BaseRecycleAdapter<*>
             if (null != loadMoreHolder && adapter?.footerHolder.size() > 0) {
@@ -106,8 +105,6 @@ class PullToRefreshView : SwipeRefreshLayout {
                 adapter.notifyDataSetChanged()
             }
             loading = false
-            if (!hasMore)
-                refreshListener?.showMessage()
         }, 500)
     }
 
