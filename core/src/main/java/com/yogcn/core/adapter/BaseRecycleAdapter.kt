@@ -126,9 +126,10 @@ abstract class BaseRecycleAdapter<T> : RecyclerView.Adapter<RecyclerHolder> {
      * @param data
      */
     fun addData(data: MutableCollection<T>?) {
-        if (null != data) {
-            this.data.addAll(data)
-            notifyDataSetChanged()
+        data?.forEach {
+            var position = this.data.size
+            this.data.add(it)
+            notifyItemInserted(position)
         }
     }
 
