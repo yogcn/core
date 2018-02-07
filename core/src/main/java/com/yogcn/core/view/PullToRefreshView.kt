@@ -102,7 +102,7 @@ class PullToRefreshView : SwipeRefreshLayout {
             var adapter = recyclerView?.adapter as BaseRecycleAdapter<*>
             if (null != loadMoreHolder && adapter?.footerHolder.size() > 0) {
                 adapter.footerHolder.clear()
-                adapter.notifyDataSetChanged()
+                adapter.notifyItemRemoved(adapter.itemCount - 1)
             }
             loading = false
         }, 500)
