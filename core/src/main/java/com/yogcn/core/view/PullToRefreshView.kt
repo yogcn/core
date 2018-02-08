@@ -7,9 +7,11 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.ViewGroup
 import com.yogcn.core.adapter.BaseRecycleAdapter
 import com.yogcn.core.base.ViewHolder
+import com.yogcn.core.util.Log
 
 /**
  * Created by lyndon on 2017/12/14.
@@ -27,6 +29,10 @@ class PullToRefreshView : SwipeRefreshLayout {
     var loading = false
 
     var onScrollListener: RecyclerView.OnScrollListener? = null
+
+    private var isRefresh = true
+    private var startX = 0f
+    private var startY = 0f
 
     interface PullToRefresh {
         fun downRefresh()
@@ -53,7 +59,7 @@ class PullToRefreshView : SwipeRefreshLayout {
                 val layoutManager = recyclerView?.layoutManager
                 when (layoutManager) {
                     is LinearLayoutManager -> {
-                        lastVisibleItemPosition = layoutManager?.findLastVisibleItemPosition()
+                        lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
                     }
                     is StaggeredGridLayoutManager -> {
                         var array = IntArray(layoutManager.spanCount)
@@ -69,23 +75,36 @@ class PullToRefreshView : SwipeRefreshLayout {
 
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!loading) {
-                    var adapter = recyclerView?.adapter as BaseRecycleAdapter<*>
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition + 1 == adapter?.itemCount) {
-                        if (null != loadMoreHolder) {
-                            if (adapter.footerHolder.size() == 0)
-                                adapter.addFooter(loadMoreHolder)
-                            adapter.notifyItemInserted(adapter.itemCount)
-                        }
-                        refreshListener?.upLoadMore()
-                        loading = true
-                    }
-                    onScrollListener?.onScrollStateChanged(recyclerView, newState)
-                }
+                onScrollListener?.onScrollStateChanged(recyclerView, newState)
             }
         })
-    }
 
+        recyclerView.setOnTouchListener { v, ev ->
+            when (ev?.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    startX = ev.x
+                    startY = ev.y
+                }
+                MotionEvent.ACTION_UP -> {
+                    var x = ev.x
+                    var y = ev.y
+                    if (!loading && ((x < startX && (startX - x) > 50) || (y < startY && (startY - y > 50)))) {
+                        var adapter = recyclerView?.adapter as BaseRecycleAdapter<*>
+                        if (lastVisibleItemPosition + 1 == adapter?.itemCount) {
+                            if (null != loadMoreHolder) {
+                                if (adapter.footerHolder.size() == 0)
+                                    adapter.addFooter(loadMoreHolder)
+                                adapter.notifyItemInserted(adapter.itemCount)
+                            }
+                            refreshListener?.upLoadMore()
+                            loading = true
+                        }
+                    }
+                }
+            }
+            false
+        }
+    }
 
     /**
      * 刷新完成
