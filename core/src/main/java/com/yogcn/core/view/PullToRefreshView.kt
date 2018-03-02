@@ -53,11 +53,11 @@ class PullToRefreshView : SwipeRefreshLayout {
                 val layoutManager = recyclerView?.layoutManager
                 when (layoutManager) {
                     is LinearLayoutManager -> {
-                        lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+                        lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition()
                     }
                     is StaggeredGridLayoutManager -> {
                         var array = IntArray(layoutManager.spanCount)
-                        layoutManager?.findLastVisibleItemPositions(array)
+                        layoutManager?.findLastCompletelyVisibleItemPositions(array)
                         array.forEach {
                             if (it > lastVisibleItemPosition)
                                 lastVisibleItemPosition = it
