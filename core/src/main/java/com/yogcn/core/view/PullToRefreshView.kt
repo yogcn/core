@@ -71,7 +71,7 @@ class PullToRefreshView : SwipeRefreshLayout {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!isLoading) {
                     var adapter = recyclerView?.adapter as BaseRecycleAdapter<*>
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition + 1 == adapter?.itemCount) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE && adapter.getDataCount() > 0 && lastVisibleItemPosition + 1 == adapter?.itemCount) {
                         if (null != loadMoreHolder) {
                             if (adapter.footerHolder.size() == 0)
                                 adapter.addFooter(loadMoreHolder)

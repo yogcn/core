@@ -79,6 +79,13 @@ abstract class BaseRecycleAdapter<T> : RecyclerView.Adapter<RecyclerHolder> {
         return headerHolder.size() + data.size + footerHolder.size()
     }
 
+    fun getDataCount(): Int {
+        return if (null == data || data.isEmpty()) {
+            0
+        } else
+            data.size
+    }
+
     private fun getItem(position: Int): T {
         return ArrayList<T>(data)[position]
     }
