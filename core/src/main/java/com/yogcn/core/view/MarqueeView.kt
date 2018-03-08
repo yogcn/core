@@ -17,7 +17,7 @@ import com.yogcn.core.adapter.MarqueeAdapter
  */
 class MarqueeView : RelativeLayout, OnPageChangeListener {
 
-    private lateinit var viewPager: ViewPager
+    var viewPager: ViewPager? = null
     var pageLayout: LinearLayout? = null
     var pageLocation = 0//默认左上角
     var pageOrientation = 0//默认横向
@@ -30,9 +30,9 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
     private var timerTask = object : Runnable {
         override fun run() {
             mHandler?.removeCallbacks(this)
-            var currentItem = viewPager.currentItem
+            var currentItem = viewPager!!.currentItem
             currentItem++
-            viewPager.currentItem = currentItem
+            viewPager?.currentItem = currentItem
             mHandler?.postDelayed(this, interval.toLong())
         }
     }
@@ -65,7 +65,7 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
         }
         mHandler = Handler()
         viewPager = ViewPager(context)
-        viewPager.addOnPageChangeListener(this)
+        viewPager?.addOnPageChangeListener(this)
         addView(viewPager, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
         if (shopPage) {
             pageLayout = LinearLayout(context)
@@ -109,12 +109,12 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
      */
     fun setMarqueeAdapter(adapter: MarqueeAdapter<*>) {
         this.marqueeAdapter = adapter
-        viewPager.adapter = marqueeAdapter
+        viewPager?.adapter = marqueeAdapter
     }
 
     /**
      * 设置设置分页指示适配器
-     * @param adapter
+     * @param pageAdapter
      */
     fun setPageAdapter(pageAdapter: BaseLinearLayoutAdapter<*>) {
         this.pageAdapter = pageAdapter
@@ -141,12 +141,22 @@ class MarqueeView : RelativeLayout, OnPageChangeListener {
         this.mHandler = null
     }
 
+    fun next() {
+        var currentIndex = viewPager!!.currentItem
+        viewPager?.currentItem = currentIndex + 1
+    }
+
+    fun previous() {
+        var currentIndex = viewPager!!.currentItem
+        viewPager?.currentItem = if (currentIndex - 1 < 0) 0 else currentIndex - 1
+    }
+
     /**
      * 设置切换动画
      * @param transformer
      */
     fun setAnimation(transformer: ViewPager.PageTransformer) {
-        viewPager.setPageTransformer(true, transformer)
+        viewPager?.setPageTransformer(true, transformer)
     }
 
     override fun onPageScrollStateChanged(state: Int) {
