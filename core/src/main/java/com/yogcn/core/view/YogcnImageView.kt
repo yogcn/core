@@ -8,6 +8,7 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
+import com.yogcn.core.util.DisplayUtil
 
 /**
  * Created by lyndon on 2017/11/8.
@@ -22,35 +23,41 @@ open class YogcnImageView : AppCompatImageView {
         @BindingAdapter(*arrayOf("url", "error", "place"))
         @JvmStatic
         fun loadImage(imageView: YogcnImageView, url: String?, error: Drawable, place: Drawable) {
-            if (TextUtils.isEmpty(url)) return
-            var context = imageView.context
-            Picasso.with(context).load(url).placeholder(place).error(error).fit().into(imageView)
+            if (!TextUtils.isEmpty(url))
+                Picasso.get().load(url).placeholder(place).error(error).fit().into(imageView)
 
         }
 
         @BindingAdapter(*arrayOf("res", "error", "place"))
         @JvmStatic
         fun loadImage(imageView: YogcnImageView, res: Int, error: Drawable, place: Drawable) {
-            var context = imageView.context
-            Picasso.with(context).load(res).placeholder(place).error(error).fit().into(imageView)
+            Picasso.get().load(res).placeholder(place).error(error).fit().into(imageView)
 
         }
 
         @BindingAdapter(*arrayOf("url"))
         @JvmStatic
         fun loadImage(imageView: YogcnImageView, url: String?) {
-            if (TextUtils.isEmpty(url)) return
-            var context = imageView.context
-            Picasso.with(context).load(url).fit().into(imageView)
+            if (!TextUtils.isEmpty(url))
+                Picasso.get().load(url).fit().into(imageView)
 
         }
 
         @BindingAdapter("resId")
         @JvmStatic
         fun loadImage(imageView: YogcnImageView, resId: Int) {
-            if (resId == 0) return
-            var context = imageView.context
-            Picasso.with(context).load(resId).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).fit().into(imageView)
+            if (resId != 0) return
+            Picasso.get().load(resId).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).fit().into(imageView)
+        }
+
+        @BindingAdapter(*arrayOf("url", "error", "place", "width", "height"))
+        @JvmStatic
+        fun loadImage(imageView: YogcnImageView, url: String?, error: Drawable, place: Drawable, width: Int, height: Int) {
+            if (!TextUtils.isEmpty(url)) {
+                var targetWidth = DisplayUtil.getInstance().scale(width)
+                var targetHeight = DisplayUtil.getInstance().scale(height)
+                Picasso.get().load(url).placeholder(place).error(error).resize(targetWidth, targetHeight).centerCrop().into(imageView)
+            }
 
         }
     }
