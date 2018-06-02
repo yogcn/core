@@ -23,7 +23,6 @@ open class BaseApplication : Application() {
         super.onCreate()
         this.context = this
         instance = this
-
         initAppInfo()
     }
 

@@ -20,8 +20,8 @@ import com.yogcn.core.util.RelayoutUtil
  */
 abstract class BaseActivity : AppCompatActivity(), PermissionListener {
 
-    protected lateinit var rootDataBind: ViewDataBinding
-    protected lateinit var childDataBind: ViewDataBinding
+    protected var rootDataBind: ViewDataBinding? = null
+    protected var childDataBind: ViewDataBinding? = null
 
     companion object {
         const val REQUEST_PERMISSION = 0x001
@@ -79,7 +79,7 @@ abstract class BaseActivity : AppCompatActivity(), PermissionListener {
      */
     override fun setContentView(layoutResID: Int) {
         rootDataBind = DataBindingUtil.inflate(layoutInflater, layoutResID, null, false)
-        setContentView(rootDataBind.root)
+        setContentView(rootDataBind?.root!!)
     }
 
     /**
@@ -112,7 +112,7 @@ abstract class BaseActivity : AppCompatActivity(), PermissionListener {
      */
     fun setChildView(layoutResID: Int, viewGroup: ViewGroup?) {
         childDataBind = DataBindingUtil.inflate(layoutInflater, layoutResID, null, false)
-        setChildContentView(childDataBind.root, viewGroup)
+        setChildContentView(childDataBind?.root, viewGroup)
     }
 
     /**

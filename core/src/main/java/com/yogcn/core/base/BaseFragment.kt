@@ -15,10 +15,10 @@ import com.yogcn.core.util.RelayoutUtil
  */
 abstract class BaseFragment : Fragment() {
     var title: CharSequence? = null
-    protected lateinit var activity: BaseActivity
-    protected lateinit var inflater: LayoutInflater
-    protected var rootDataBinding: ViewDataBinding? = null
     private var rootLayoutResID = 0
+    protected var activity: BaseActivity? = null
+    protected var inflater: LayoutInflater? = null
+    protected var rootDataBinding: ViewDataBinding? = null
     protected var prepared: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +43,7 @@ abstract class BaseFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null == rootDataBinding) {
-            rootDataBinding = DataBindingUtil.inflate(inflater, rootLayoutResID, container, false)
+            rootDataBinding = DataBindingUtil.inflate(inflater!!, rootLayoutResID, container, false)
             RelayoutUtil.reLayoutViewHierarchy(rootDataBinding?.root)
             initUI()
             prepared = true

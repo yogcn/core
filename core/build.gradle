@@ -39,7 +39,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    kapt "com.android.databinding:compiler:$android_plugin_version"
     compile "com.google.code.gson:gson:2.8.2"
     compile "com.lzy.net:okgo:3.0.4"
     compile 'com.squareup.picasso:picasso:2.71828'
