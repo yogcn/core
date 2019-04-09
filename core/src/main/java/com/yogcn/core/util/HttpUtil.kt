@@ -28,7 +28,7 @@ import javax.net.ssl.*
  */
 class HttpUtil {
 
-    private val builder:OkHttpClient.Builder = OkHttpClient.Builder()
+    private val builder: OkHttpClient.Builder = OkHttpClient.Builder()
 
     companion object {
         const val Tag = "httpUtil"
@@ -39,26 +39,31 @@ class HttpUtil {
         val instance = HttpUtil()
     }
 
-    enum class CookType{
-        SP,DB,MEMORY
+    enum class CookType {
+        SP, DB, MEMORY
     }
 
 
-    constructor(){
+    constructor() {
         //设置调试日志
-        val logInterceptor=HttpLoggingInterceptor(Tag)
+        val logInterceptor = HttpLoggingInterceptor(Tag)
         logInterceptor.setColorLevel(Level.WARNING)
-        if(BaseApplication.instance.isDebug()){
+        if (BaseApplication.instance.isDebug()) {
             logInterceptor.setPrintLevel(HttpLoggingInterceptor.Level.BODY)
-        }else
+        } else
             logInterceptor.setPrintLevel(HttpLoggingInterceptor.Level.NONE)
         builder.addInterceptor(logInterceptor)
 
-        builder.readTimeout(60,TimeUnit.SECONDS)//读取超时
-        builder.writeTimeout(60,TimeUnit.SECONDS)//写入超时
-        builder.connectTimeout(60,TimeUnit.SECONDS)//连接超时
+        builder.readTimeout(60, TimeUnit.SECONDS)//读取超时
+        builder.writeTimeout(60, TimeUnit.SECONDS)//写入超时
+        builder.connectTimeout(60, TimeUnit.SECONDS)//连接超时
 
 
+    }
+
+    fun setHost(host: String): HttpUtil {
+        HttpsUtils.setHost(host)
+        return this
     }
 
     /**
@@ -66,10 +71,10 @@ class HttpUtil {
      * @param context
      * @param type
      */
-    fun setCookie(context: Context,type:CookType): HttpUtil {
-        when(type){
-            CookType.SP->builder.cookieJar(CookieJarImpl(SPCookieStore(context)))
-            CookType.DB->builder.cookieJar(CookieJarImpl(DBCookieStore(context)))
+    fun setCookie(context: Context, type: CookType): HttpUtil {
+        when (type) {
+            CookType.SP -> builder.cookieJar(CookieJarImpl(SPCookieStore(context)))
+            CookType.DB -> builder.cookieJar(CookieJarImpl(DBCookieStore(context)))
             else -> builder.cookieJar(CookieJarImpl(MemoryCookieStore()))
         }
         return this
@@ -80,16 +85,17 @@ class HttpUtil {
      */
     fun setTrustHttps(): HttpUtil {
         val sslSocketFactory = HttpsUtils.getSslSocketFactory()
-        builder.sslSocketFactory(sslSocketFactory.sSLSocketFactory,sslSocketFactory.trustManager)
+        builder.sslSocketFactory(sslSocketFactory.sSLSocketFactory, sslSocketFactory.trustManager)
         return this
     }
+
     /**
      * 自定义信任规则，校验服务端证书
      * @param trustManager
      */
-    fun setTrustHttps(trustManager:X509TrustManager): HttpUtil {
+    fun setTrustHttps(trustManager: X509TrustManager): HttpUtil {
         val sslSocketFactory = HttpsUtils.getSslSocketFactory(trustManager)
-        builder.sslSocketFactory(sslSocketFactory.sSLSocketFactory,sslSocketFactory.trustManager)
+        builder.sslSocketFactory(sslSocketFactory.sSLSocketFactory, sslSocketFactory.trustManager)
         return this
     }
 
@@ -97,50 +103,52 @@ class HttpUtil {
      * 使用预埋证书，校验服务端证书（自签名证书）
      * @param cer 放置于assets目录下的自签名证书
      */
-    fun setTrustHttps(cer:String): HttpUtil {
-        var inputStream=BaseApplication.instance.assets.open(cer)
+    fun setTrustHttps(cer: String): HttpUtil {
+        var inputStream = BaseApplication.instance.assets.open(cer)
         val sslSocketFactory = HttpsUtils.getSslSocketFactory(inputStream)
-        builder.sslSocketFactory(sslSocketFactory.sSLSocketFactory,sslSocketFactory.trustManager)
+        builder.sslSocketFactory(sslSocketFactory.sSLSocketFactory, sslSocketFactory.trustManager)
         inputStream.close()
         return this
     }
+
     /**
      * 使用bks证书和密码管理客户端证书（双向认证），使用预埋证书，校验服务端证书（自签名证书）
      * @param bsk 放置于assets目录下的信任的服务器端证书
      * @param bskPwd 服务器端证书密码
      * @param cer 放置于assets目录下的自签名证书
      */
-    fun setTrustHttps(bsk:String,bskPwd:String,cer:String): HttpUtil {
-        var bskInputStream=BaseApplication.instance.assets.open(bsk)
-        var cerInputStream=BaseApplication.instance.assets.open(cer)
-        val sslSocketFactory = HttpsUtils.getSslSocketFactory(bskInputStream,bskPwd,cerInputStream)
-        builder.sslSocketFactory(sslSocketFactory.sSLSocketFactory,sslSocketFactory.trustManager)
+    fun setTrustHttps(bsk: String, bskPwd: String, cer: String): HttpUtil {
+        var bskInputStream = BaseApplication.instance.assets.open(bsk)
+        var cerInputStream = BaseApplication.instance.assets.open(cer)
+        val sslSocketFactory = HttpsUtils.getSslSocketFactory(bskInputStream, bskPwd, cerInputStream)
+        builder.sslSocketFactory(sslSocketFactory.sSLSocketFactory, sslSocketFactory.trustManager)
         bskInputStream.close()
         cerInputStream.close()
         return this
     }
+
     /**
      * 使用bks证书和密码管理客户端证书（双向认证），使用预埋证书，校验服务端证书（自签名证书）
      * @param cer 放置于assets目录下的自签名证书
      * @param cer 放置于assets目录下的自签名证书
      */
-    fun setTrustHttps(clientP12:String,p12Pwd:String,bsk:String,bskPwd:String): HttpUtil {
-        val trustManager = chooseTrustManager(getTrustManager( bsk, bskPwd))
+    fun setTrustHttps(clientP12: String, p12Pwd: String, bsk: String, bskPwd: String): HttpUtil {
+        val trustManager = chooseTrustManager(getTrustManager(bsk, bskPwd))
         val sslSocketFactory = getSSLSocketFactory(clientP12, p12Pwd, trustManager!!)
-        builder.sslSocketFactory(sslSocketFactory,trustManager)
+        builder.sslSocketFactory(sslSocketFactory, trustManager)
         return this
     }
 
-    private fun getTrustManager(trustPath:String,trustPwd:String):Array<TrustManager>?{
-        return  try {
+    private fun getTrustManager(trustPath: String, trustPwd: String): Array<TrustManager>? {
+        return try {
             val trustStore = KeyStore.getInstance("BKS")
-            var trustInputStream=BaseApplication.instance.assets.open(trustPath)
-            trustStore.load(trustInputStream,trustPwd.toCharArray())
+            var trustInputStream = BaseApplication.instance.assets.open(trustPath)
+            trustStore.load(trustInputStream, trustPwd.toCharArray())
             trustInputStream.close()
             val trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
             trustManagerFactory.init(trustStore)
-             trustManagerFactory.trustManagers
-        }catch (e:Exception){
+            trustManagerFactory.trustManagers
+        } catch (e: Exception) {
             e.printStackTrace()
             null
         }
@@ -245,6 +253,7 @@ class HttpUtil {
         }
         postRequest.execute(callback)
     }
+
     /**
      * 提交字符串
      * @param tag

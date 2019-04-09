@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity(), PullToRefreshView.PullToRefresh {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         mainBind = DataBindingUtil.inflate(layoutInflater, R.layout.activity_main, null, false);
         setContentView(mainBind.root)
 
